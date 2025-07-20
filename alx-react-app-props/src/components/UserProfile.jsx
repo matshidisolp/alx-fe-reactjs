@@ -4,12 +4,13 @@ import { UserContext } from "../UserContext";
 const UserProfile = () => {
     const userData = useContext(UserContext);
 
-    return(
-        <div>
-            <h2>{userData.name}</h2>
-            <p>Email: {userDate.email}</p>
-        </div>
-    );
-};
+  return (
+    <div className="user-profile">
+      <h2>User Profile</h2>
+      <p><strong>Name:</strong> {userData.name}</p>
+      <p><strong>Email:</strong> {userData.email}</p>
+    </div>
+  );
+}
 
- export default UserProfile;
+export default UserProfile;
