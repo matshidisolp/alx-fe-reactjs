@@ -1,45 +1,74 @@
 import { create } from 'zustand';
 
 export const useRecipeStore = create((set, get) => ({
-  recipes: [],
-  filteredRecipes: [],
-  searchTerm: '',
+  recipes: [
+    {
+      id: 1,
+      title: 'Spaghetti Bolognese',
+      description: 'Classic Italian pasta dish with beef sauce',
+      ingredients: ['pasta', 'beef', 'tomato', 'onion'],
+      prepTime: 30
+    },
+    {
+      id: 2,
+      title: 'Grilled Chicken Salad',
+      description: 'Fresh greens with grilled chicken breast',
+      ingredients: ['chicken', 'lettuce', 'tomato', 'cucumber'],
+      prepTime: 20
+    },
+    {
+      id: 3,
+      title: 'Chocolate Cake',
+      description: 'Rich and moist chocolate cake',
+      ingredients: ['flour', 'cocoa', 'sugar', 'eggs'],
+      prepTime: 45
+    }
+  ],
 
+  // 🔍 Filters
+  searchTerm: '',
+  ingredientFilter: '',
+  maxPrepTimeFilter: '',
+
+  // 📃 Filtered results
+  filteredRecipes: [],
+
+  // 🔧 Setters
   setSearchTerm: (term) => {
     set({ searchTerm: term }, false, 'setSearchTerm');
-    get().filterRecipes(); // Trigger filter when search term changes
+    get().filterRecipes();
   },
 
-  setRecipes: (recipes) => {
-    set({ recipes }, false, 'setRecipes');
-    get().filterRecipes(); // Filter right after setting recipes
+  setIngredientFilter: (ingredient) => {
+    set({ ingredientFilter: ingredient }, false, 'setIngredientFilter');
+    get().filterRecipes();
   },
 
-  addRecipe: (recipe) => {
-    const updatedRecipes = [...get().recipes, recipe];
-    set({ recipes: updatedRecipes }, false, 'addRecipe');
-    get().filterRecipes(); // Filter after adding
+  setMaxPrepTimeFilter: (time) => {
+    set({ maxPrepTimeFilter: time }, false, 'setMaxPrepTimeFilter');
+    get().filterRecipes();
   },
 
-  updateRecipe: (updatedRecipe) => {
-    const updatedRecipes = get().recipes.map((r) =>
-      r.id === updatedRecipe.id ? updatedRecipe : r
-    );
-    set({ recipes: updatedRecipes }, false, 'updateRecipe');
-    get().filterRecipes(); // Filter after update
-  },
-
-  deleteRecipe: (id) => {
-    const updatedRecipes = get().recipes.filter((r) => r.id !== id);
-    set({ recipes: updatedRecipes }, false, 'deleteRecipe');
-    get().filterRecipes(); // Filter after delete
-  },
-
+  // 🧠 Filtering logic
   filterRecipes: () => {
-    const { recipes, searchTerm } = get();
-    const filtered = recipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const { recipes, searchTerm, ingredientFilter, maxPrepTimeFilter } = get();
+
+    const filtered = recipes.filter((recipe) => {
+      const matchesTitle = recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesIngredient = ingredientFilter
+        ? recipe.ingredients.some((ingredient) =>
+            ingredient.toLowerCase().includes(ingredientFilter.toLowerCase())
+          )
+        : true;
+
+      const matchesPrepTime = maxPrepTimeFilter
+        ? recipe.prepTime <= Number(maxPrepTimeFilter)
+        : true;
+
+      return matchesTitle && matchesIngredient && matchesPrepTime;
+    });
+
     set({ filteredRecipes: filtered }, false, 'filterRecipes');
-  },
+  }
 }));
