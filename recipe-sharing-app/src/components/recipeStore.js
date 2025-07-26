@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+// Store for managing global recipe state using Zustand
 export const useRecipeStore = create((set, get) => ({
   // The main list of recipes in the app
   recipes: [
