@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 export const useRecipeStore = create((set, get) => ({
+  // The main list of recipes in the app
   recipes: [
     {
       id: 1,
@@ -25,31 +26,39 @@ export const useRecipeStore = create((set, get) => ({
     }
   ],
 
-  // 🔍 Filters
-  searchTerm: '',
-  ingredientFilter: '',
-  maxPrepTimeFilter: '',
+  // Search and filter state
+  searchTerm: '',               // Stores the search input from the user
+  ingredientFilter: '',         // Stores the ingredient filter
+  maxPrepTimeFilter: '',        // Stores the maximum preparation time
 
-  // 📃 Filtered results
+  // List of recipes after filtering
   filteredRecipes: [],
 
-  // 🔧 Setters
+  // User's favorite recipes (stored as an array of recipe IDs)
+  favorites: [],
+
+  // Personalized recipe suggestions based on favorites
+  recommendations: [],
+
+  // Set search term and re-filter the recipe list
   setSearchTerm: (term) => {
     set({ searchTerm: term }, false, 'setSearchTerm');
     get().filterRecipes();
   },
 
+  // Set ingredient filter and re-filter
   setIngredientFilter: (ingredient) => {
     set({ ingredientFilter: ingredient }, false, 'setIngredientFilter');
     get().filterRecipes();
   },
 
+  // Set max preparation time filter and re-filter
   setMaxPrepTimeFilter: (time) => {
     set({ maxPrepTimeFilter: time }, false, 'setMaxPrepTimeFilter');
     get().filterRecipes();
   },
 
-  // 🧠 Filtering logic
+  // Filters recipes based on search term, ingredient, and prep time
   filterRecipes: () => {
     const { recipes, searchTerm, ingredientFilter, maxPrepTimeFilter } = get();
 
@@ -70,5 +79,29 @@ export const useRecipeStore = create((set, get) => ({
     });
 
     set({ filteredRecipes: filtered }, false, 'filterRecipes');
+  },
+
+  // Add a recipe to the favorites list
+  addFavorite: (recipeId) =>
+    set((state) => ({
+      favorites: [...new Set([...state.favorites, recipeId])] // Ensures no duplicates
+    }), false, 'addFavorite'),
+
+  // Remove a recipe from favorites
+  removeFavorite: (recipeId) =>
+    set((state) => ({
+      favorites: state.favorites.filter((id) => id !== recipeId)
+    }), false, 'removeFavorite'),
+
+  // Generate recommendations randomly from favorites (demo logic)
+  generateRecommendations: () => {
+    const { recipes, favorites } = get();
+
+    // Picks random favorites to suggest again (just for demo)
+    const recommended = recipes.filter(
+      (recipe) => favorites.includes(recipe.id) && Math.random() > 0.5
+    );
+
+    set({ recommendations: recommended }, false, 'generateRecommendations');
   }
 }));
