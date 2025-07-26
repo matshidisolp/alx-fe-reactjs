@@ -1,10 +1,10 @@
 import React from 'react';
-import { useRecipeStore } from '../recipeStore'; // ✅ Adjust path if needed
+import { useRecipeStore } from './recipeStore'; 
 import { Link } from 'react-router-dom';
 
 const RecommendationsList = () => {
   const getRecommendations = useRecipeStore((state) => state.getRecommendations);
-  const recommendations = getRecommendations(); // 👈 call the function directly to get the list
+  const recommendations = getRecommendations(); // call the function directly to get the list
 
   return (
     <div>
