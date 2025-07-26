@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'; 
 import { useRecipeStore } from '../recipeStore';
 import { Link } from 'react-router-dom';
 
-const Favorites = () => {
+const FavoritesList = () => {
   const recipes = useRecipeStore((state) => state.recipes);
   const favorites = useRecipeStore((state) => state.favorites);
   const removeFavorite = useRecipeStore((state) => state.removeFavorite);
@@ -24,9 +24,9 @@ const Favorites = () => {
           </div>
         ))
       )}
-      <Link to="/">🔙 Back to Recipes</Link>
+      <Link to="/">Back to Recipes</Link>
     </div>
   );
 };
 
-export default Favorites;
+export default FavoritesList;
