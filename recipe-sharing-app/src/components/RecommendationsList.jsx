@@ -1,18 +1,17 @@
 import React from 'react';
-import { useRecipeStore } from './recipeStore';
+import { useRecipeStore } from '../recipeStore'; // ✅ Adjust path if needed
 import { Link } from 'react-router-dom';
 
-const Recommendations = () => {
-  const recommendations = useRecipeStore((state) => state.recommendations);
-  const generateRecommendations = useRecipeStore((state) => state.generateRecommendations);
+const RecommendationsList = () => {
+  const getRecommendations = useRecipeStore((state) => state.getRecommendations);
+  const recommendations = getRecommendations(); // 👈 call the function directly to get the list
 
   return (
     <div>
       <h2>Recommended Recipes</h2>
-      <button onClick={generateRecommendations}>Refresh Recommendations</button>
 
       {recommendations.length === 0 ? (
-        <p>No recommendations yet. Click the button to generate.</p>
+        <p>No recommendations available. Try adding some favorites first.</p>
       ) : (
         recommendations.map((recipe) => (
           <div key={recipe.id}>
@@ -21,9 +20,10 @@ const Recommendations = () => {
           </div>
         ))
       )}
+
       <Link to="/">Back to Recipes</Link>
     </div>
   );
 };
 
-export default Recommendations;
+export default RecommendationsList;
