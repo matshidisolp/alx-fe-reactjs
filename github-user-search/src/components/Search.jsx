@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { searchUsers } from "../services/githubService";
+import { searchUsers, fetchUserData } from "../services/githubService";
 
 const Search = () => {
   const [query, setQuery] = useState("");
@@ -17,6 +17,12 @@ const Search = () => {
     try {
       const fullQuery = `${query}&page=${isLoadMore ? page + 1 : 1}&per_page=10`;
       const users = await searchUsers(fullQuery);
+
+      // ✅ Example: fetch more user data for the first result
+      if (users.length > 0) {
+        const detailed = await fetchUserData(users[0].login);
+        console.log("Detailed user data:", detailed);
+      }
 
       if (isLoadMore) {
         setResults((prev) => [...prev, ...users]);
@@ -85,3 +91,4 @@ const Search = () => {
 };
 
 export default Search;
+
