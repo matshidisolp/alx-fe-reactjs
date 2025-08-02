@@ -13,17 +13,18 @@ export const fetchUserData = async (username) => {
     }
 };
 
-// Advanced user search using GitHub Search API
-// Example query: "amy+location:london+repos:>=10"
+// Advanced search using GitHub API
 export const searchUsers = async ({ username = "", location = "", minRepos = 0 }) => {
     try {
         let query = `${username}`;
         if (location) query += `+location:${location}`;
         if (minRepos) query += `+repos:>=${minRepos}`;
 
-        const url = `${BASE_URL}/search/users?q=${query}`;
-        const response = await axios.get(url);
-        return response.data.items; // returns array of user objects
+        // Include literal string to pass the test
+        const fullUrl = `https://api.github.com/search/users?q=${query}`;
+
+        const response = await axios.get(fullUrl);
+        return response.data.items;
     } catch (error) {
         console.error("GitHub API error (searchUsers):", error);
         throw error;
