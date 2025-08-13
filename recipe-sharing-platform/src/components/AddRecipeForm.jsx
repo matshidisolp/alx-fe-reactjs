@@ -1,0 +1,179 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+function AddRecipeForm() {
+  // form state
+  const [title, setTitle] = useState("");
+  const [ingredientsText, setIngredientsText] = useState("");
+  const [stepsText, setStepsText] = useState("");             
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  // turn textarea text into arrays
+  const toList = (text, splitOnLinesOnly = false) => {
+    const splitter = splitOnLinesOnly ? /\n+/ : /,|\n/; 
+    return text
+      .split(splitter)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  };
+
+  // validation
+  const validate = () => {
+    const errs = {};
+    if (!title.trim()) errs.title = "Title is required.";
+
+    const ingredientList = toList(ingredientsText);
+    if (ingredientList.length < 2)
+      errs.ingredients = "Add at least 2 ingredients (use new lines or commas).";
+
+    const stepList = toList(stepsText, true);
+    if (stepList.length < 2)
+      errs.steps = "Add at least 2 preparation steps (one per line).";
+
+    return { errs, ingredientList, stepList };
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { errs, ingredientList, stepList } = validate();
+    setErrors(errs);
+
+    if (Object.keys(errs).length === 0) {
+      const newRecipe = {
+        id: Date.now(), // mock id
+        title: title.trim(),
+        ingredients: ingredientList,
+        instructions: stepList,
+      };
+
+      // saving to local storage
+      const existing = JSON.parse(localStorage.getItem("userRecipes") || "[]");
+      existing.push(newRecipe);
+      localStorage.setItem("userRecipes", JSON.stringify(existing));
+
+      setSubmitted(true);
+      setTitle("");
+      setIngredientsText("");
+      setStepsText("");
+    }
+  };
+
+  return (
+    <main className="max-w-3xl mx-auto p-4 sm:p-6 lg:p-10">
+      {/* Top bar */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Add a New Recipe</h1>
+        <Link
+          to="/"
+          className="text-blue-600 hover:text-blue-700 underline underline-offset-4"
+        >
+          ← Back to Home
+        </Link>
+      </div>
+
+      {/* Success message */}
+      {submitted && (
+        <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-green-700">
+          Recipe saved locally. (We’re storing it in <code>localStorage</code> for now.)
+        </div>
+      )}
+
+      {/* The form */}
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="bg-white rounded-2xl shadow-md p-6 sm:p-8"
+      >
+        {/* Title */}
+        <div className="mb-6">
+          <label htmlFor="title" className="block font-medium text-gray-800 mb-2">
+            Recipe Title
+          </label>
+          <input
+            id="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="e.g. Creamy Mushroom Pasta"
+            aria-invalid={!!errors.title}
+            aria-describedby="title-error"
+          />
+          {errors.title && (
+            <p id="title-error" className="mt-2 text-sm text-red-600">
+              {errors.title}
+            </p>
+          )}
+        </div>
+
+        {/* Ingredients */}
+        <div className="mb-6">
+          <label htmlFor="ingredients" className="block font-medium text-gray-800 mb-2">
+            Ingredients
+          </label>
+          <textarea
+            id="ingredients"
+            value={ingredientsText}
+            onChange={(e) => setIngredientsText(e.target.value)}
+            className="w-full h-40 rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder={"One per line or use commas:\n200g pasta\n1 cup cream\nMushrooms, garlic, salt"}
+            aria-invalid={!!errors.ingredients}
+            aria-describedby="ingredients-error"
+          />
+          {errors.ingredients && (
+            <p id="ingredients-error" className="mt-2 text-sm text-red-600">
+              {errors.ingredients}
+            </p>
+          )}
+        </div>
+
+        {/* Steps */}
+        <div className="mb-8">
+          <label htmlFor="steps" className="block font-medium text-gray-800 mb-2">
+            Preparation Steps
+          </label>
+          <textarea
+            id="steps"
+            value={stepsText}
+            onChange={(e) => setStepsText(e.target.value)}
+            className="w-full h-48 rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder={"One step per line:\nBoil pasta until al dente.\nSauté mushrooms in butter.\nStir in cream and season."}
+            aria-invalid={!!errors.steps}
+            aria-describedby="steps-error"
+          />
+          {errors.steps && (
+            <p id="steps-error" className="mt-2 text-sm text-red-600">
+              {errors.steps}
+            </p>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            type="submit"
+            className="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            Save Recipe
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setTitle("");
+              setIngredientsText("");
+              setStepsText("");
+              setErrors({});
+              setSubmitted(false);
+            }}
+            className="w-full sm:w-auto rounded-lg border px-5 py-2.5 hover:bg-gray-50"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
+    </main>
+  );
+}
+
+export default AddRecipeForm;
