@@ -12,20 +12,23 @@ const RegistrationForm = () => {
         e.preventDefault();
 
     //Validation logic
-    if (!username || !email || !password) {
-        setError('All fields are required.');
+    if (!username) newErrors.username = 'Username is required';
+    if (!email) newErrors.email = 'Email is required';
+    if (!password) newErrors.password = 'Password is required';
+
+    if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
         return;
     }
 
-    setError('');
-    console.log('User registered:', {username, email, password});
+    //If no errors then register user
+    setErrors({});
+        console.log('User registered:', {username, email, password });
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <h2>Register (Controlled)</h2>
-
-            {error && <p style={{ color: 'red' }}>{error}</p>}
 
             <div>
                 <label>Username:</label>
@@ -34,6 +37,7 @@ const RegistrationForm = () => {
                   value={username}  //controlled input
                   onChange={(e) => setUsername(e.target.value)}
                   />
+                  {errors.username && <div style={{ color: "red" }}>{errors.username}</div>} 
             </div>
 
             <div>
@@ -43,6 +47,7 @@ const RegistrationForm = () => {
                   value={email}  //controlled input
                   onChange={(e) => setEmail(e.target.value)}
                   />
+                  {errors.email && <div style={{ color: "red" }}>{errors.email}</div>}
             </div>
 
             <div>
@@ -52,6 +57,7 @@ const RegistrationForm = () => {
                   value={password}  //controlled input
                   onChange={(e) => setPassword(e.target.value)}
                   />
+                  {errors.password && <div style={{ color: "red" }}>{errors.password}</div>}
             </div>
 
             <button type='submit'>Register</button>
