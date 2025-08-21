@@ -1,44 +1,37 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import Home from './pages/Home';
-import Post from './pages/Post';
-import Posts from './pages/Posts';
-import Profile from './pages/Profile';
-import ProfileDetails from './pages/ProfileDetails';
-import ProfileSetting from './pages/ProfileSettings';
-import NotFound from './pages/NotFound';
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import Post from './components/Post';
+import Posts from './components/Posts';
+import Profile from './components/Profile';
+import ProfileDetails from './components/ProfileDetails';
+import ProfileSettings from './components/ProfileSettings';
+import BlogPost from './components/BlogPost';
+import NotFound from './components/NotFound';
+import './App.css';
 
 function App() {
-    return (
+  console.log("App loaded!");
+
+  return (
     <BrowserRouter>
-      <div style={{ maxWidth: 900, margin: "2rem auto", fontFamily: "Arial" }}>
-        <header style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-          <Link to="/">Home</Link>
-          <Link to="/posts">Posts</Link>
-          <Link to="/profile">Profile</Link>
-        </header>
+      <Routes>
+        {/* Home Page */}
+        <Route path="/" element={<Home />} />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
+        {/* Nested Routes for Profile */}
+        <Route path="/profile" element={<Profile />}>
+          <Route path="details" element={<ProfileDetails />} />
+          <Route path="settings" element={<ProfileSettings />} />
+        </Route>
 
-          {/* Posts list and dynamic post route */}
-          <Route path="/posts" element={<Posts />} />
-          <Route path="/posts/:postId" element={<Post />} />
+        {/* Dynamic Route */}
+        <Route path="/blog/:id" element={<BlogPost />} />
 
-          {/* Profile route with nested children */}
-          <Route path="/profile" element={<Profile />}>
-            {/* Index route shows when user visit /profile */}
-            <Route index element={<ProfileDetails />} />
-            <Route path="details" element={<ProfileDetails />} />
-            <Route path="settings" element={<ProfileSettings />} />
-          </Route>
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+        {/* 404 Page */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </BrowserRouter>
-    );
+  );
 }
 
 export default App;
