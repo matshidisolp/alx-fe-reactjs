@@ -1,18 +1,29 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import ProfileDetails from './ProfileDetails';
+import ProfileSettings from './ProfileSettings';
 
-export default function Profile() {
+function Profile() {
     return (
         <div>
-            <h2>Profile</h2>
+            <h2>Profile Page</h2>
 
-            {/*A NavLink uses relative paths by default when w/n parent route */}
-            <nav style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
-                <NavLink to='details'>Details</NavLink>
-                <NavLink to='setting'>Settings</NavLink>
+            {/*Nav for nested routes */}
+            <nav>
+                <ul>
+                    <li>
+                        <Link to ='details'>Profile Details</Link>
+                    </li>
+                    <li>
+                        <Link to='settings'>Profile Settings</Link>
+                    </li>
+                </ul>
             </nav>
 
             {/* Nested routes rendering */}
-            <Outlet />
+            <Routes>
+                <Route path='details' element={<ProfileDetails />} />
+                <Route path='settings' element={<ProfileSettings />}/>
+            </Routes>
         </div>
     );
 }

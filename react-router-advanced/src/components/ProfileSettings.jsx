@@ -1,8 +1,10 @@
-export default function ProfileSettings() {
-  return (
-    <div>
-      <h3>Profile Settings</h3>
-      <p>Settings form placeholder — change password, etc.</p>
-    </div>
-  );
+function ProfileSettings() {
+    return (
+        <div>
+            <h3>Profile Settings</h3>
+            <p>You can update your profile settings here.</p>
+        </div>
+    );
 }
+
+export default ProfileSettings;
