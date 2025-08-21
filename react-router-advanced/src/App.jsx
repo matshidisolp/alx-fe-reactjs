@@ -7,6 +7,7 @@ import ProfileDetails from './components/ProfileDetails';
 import ProfileSettings from './components/ProfileSettings';
 import BlogPost from './components/BlogPost';
 import NotFound from './components/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 function App() {
@@ -19,7 +20,14 @@ function App() {
         <Route path="/" element={<Home />} />
 
         {/* Nested Routes for Profile */}
-        <Route path="/profile" element={<Profile />}>
+        <Route 
+           path="/profile"
+           element={
+           <ProtectedRoute>
+            <Profile />
+            </ProtectedRoute>
+           }
+           >
           <Route path="details" element={<ProfileDetails />} />
           <Route path="settings" element={<ProfileSettings />} />
         </Route>
