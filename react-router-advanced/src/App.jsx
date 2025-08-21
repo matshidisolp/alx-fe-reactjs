@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import Home from './pages/Home';
+import Post from './pages/Post';
+import Posts from './pages/Posts';
+import Profile from './pages/Profile';
+import ProfileDetails from './pages/ProfileDetails';
+import ProfileSetting from './pages/ProfileSettings';
+import NotFound from './pages/NotFound';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+    <BrowserRouter>
+      <div style={{ maxWidth: 900, margin: "2rem auto", fontFamily: "Arial" }}>
+        <header style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+          <Link to="/">Home</Link>
+          <Link to="/posts">Posts</Link>
+          <Link to="/profile">Profile</Link>
+        </header>
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          {/* Posts list and dynamic post route */}
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/posts/:postId" element={<Post />} />
+
+          {/* Profile route with nested children */}
+          <Route path="/profile" element={<Profile />}>
+            {/* Index route shows when user visit /profile */}
+            <Route index element={<ProfileDetails />} />
+            <Route path="details" element={<ProfileDetails />} />
+            <Route path="settings" element={<ProfileSettings />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </BrowserRouter>
+    );
 }
 
-export default App
+export default App;
